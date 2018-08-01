@@ -7,6 +7,7 @@ FROM        alpine:3.4
 
 
 ENV         X264_VERSION=20160826-2245-stable \
+            X265_VERSION=x265_2.8 \
             PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
             SRC=/usr/local
 
@@ -24,6 +25,7 @@ RUN     buildDeps="autoconf \
                    gcc \
                    git \
                    libtool \
+                   cmake \
                    make \
                    openssl-dev \
                    tar \
@@ -37,7 +39,16 @@ RUN     buildDeps="autoconf \
         curl -sL https://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-${X264_VERSION}.tar.bz2 | \
         tar -jx --strip-components=1 && \
         ./configure --prefix="${SRC}" --bindir="${SRC}/bin" --enable-pic --enable-shared --disable-cli && \
-        make && \
+        make -j$(nproc) && \
+        make install && \
+        rm -rf ${DIR} && \
+
+        DIR=$(mktemp -d) && cd ${DIR} && \
+## x265 http://www.videolan.org/developers/x265.html
+        curl -sL https://download.videolan.org/pub/videolan/x265/${X265_VERSION}.tar.gz | \
+        tar -zx --strip-components=1 && \
+        cd build && cmake ../source && \
+        make -j$(nproc) && \
         make install && \
         rm -rf ${DIR}
 
@@ -58,6 +69,7 @@ RUN     DIR=$(mktemp -d) && cd ${DIR} && \
         --extra-libs=-ldl \
         --enable-version3 \
         --enable-libx264 \
+	--enable-libx265 \
         --enable-libfontconfig \
         --enable-libfreetype \
         --enable-gpl \
@@ -66,7 +78,7 @@ RUN     DIR=$(mktemp -d) && cd ${DIR} && \
         --enable-nonfree \
         --disable-debug \
         --enable-openssl && \
-        make && \
+        make -j$(nproc) && \
         make install && \
         make distclean && \
         hash -r && \
