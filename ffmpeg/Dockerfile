@@ -100,13 +100,16 @@ CMD  ffmpeg -re -f lavfi -i smptehdbars=size=1280x720 \
             -filter_complex \
                 "drawbox=y=25: x=iw/2-iw/7: c=0x00000000@1: w=iw/3.5: h=36: t=max, \
                  drawtext=timecode_rate=${FRAME_RATE}: timecode='$(date -u +%H\\:%M\\:%S)\\${FRAME_SEP}$(($(date +%3N)/$(($FRAME_RATE))))': tc24hmax=1: fontsize=32: x=(w-tw)/2+tw/2: y=30: fontcolor=white, \
-                 drawtext=text='%{gmtime\:%Y-%m-%d}\ ': fontsize=32: x=(w-tw)/2-tw/2: y=30: fontcolor=white${OVERLAY_FILTER}" \
+                 drawtext=text='%{gmtime\:%Y-%m-%d}\ ': fontsize=32: x=(w-tw)/2-tw/2: y=30: fontcolor=white${OVERLAY_FILTER},\
+                 split=2[out1][out2]" \
             -g $GOP_LENGTH \
             -r $FRAME_RATE \
             -keyint_min $GOP_LENGTH \
-            -c:v libx264 \
+            -c:v:0 libx264 \
+            -c:v:1 libx265 \
             -c:a aac \
-            -map 0:v \
+            -map '[out1]' \
+            -map '[out2]' \
             -map 1:a \
             -fflags +genpts \
             -movflags isml+frag_keyframe \
