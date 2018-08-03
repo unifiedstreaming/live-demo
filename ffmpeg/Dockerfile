@@ -108,6 +108,7 @@ CMD  ffmpeg -re -f lavfi -i smptehdbars=size=1280x720 \
             -c:v:0 libx264 \
             -b:v:0 2000k \
             -c:v:1 libx265 \
+            -tune zerolatency \
             -b:v:1 1000k \
             -c:a aac \
             -map '[out1]' \
