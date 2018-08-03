@@ -106,7 +106,10 @@ CMD  ffmpeg -re -f lavfi -i smptehdbars=size=1280x720 \
             -r $FRAME_RATE \
             -keyint_min $GOP_LENGTH \
             -c:v:0 libx264 \
+            -b:v:0 2000k \
             -c:v:1 libx265 \
+            -b:v:1 1000k \
+            -preset ultrafast \
             -c:a aac \
             -map '[out1]' \
             -map '[out2]' \
