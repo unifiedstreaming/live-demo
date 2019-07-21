@@ -17,7 +17,7 @@ services:
     build: https://github.com/unifiedstreaming/live-demo.git#:ffmpeg
     environment:
       - PUB_POINT_URI=http://live-origin/test/test.isml/Streams(ffmpeg)
-      - LOGO_OVERLAY=https://raw.githubusercontent.com/unifiedstreaming/live-demo/master/ffmpeg/usp_logo_white.png
+      - LOGO_OVERLAY=
     depends_on:
       live-origin:
         condition: service_healthy
