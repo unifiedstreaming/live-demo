@@ -36,5 +36,5 @@ if [ ! $PUB_POINT_URI ]
   exit 1
 fi
 
-
 exec "$@"
+
