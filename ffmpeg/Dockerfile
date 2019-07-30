@@ -31,9 +31,7 @@ RUN     buildDeps="autoconf \
                    zlib-dev" && \
         export MAKEFLAGS="-j$(($(grep -c ^processor /proc/cpuinfo) + 1))" && \
         apk  add --update ${buildDeps} freetype-dev fontconfig-dev ttf-droid libgcc libstdc++ ca-certificates && \
-
         DIR=$(mktemp -d) && cd ${DIR} && \
-## x264 http://www.videolan.org/developers/x264.html
         curl -sL https://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-${X264_VERSION}.tar.bz2 | \
         tar -jx --strip-components=1 && \
         ./configure --prefix="${SRC}" --bindir="${SRC}/bin" --enable-pic --enable-shared --disable-cli && \
@@ -71,7 +69,6 @@ RUN     DIR=$(mktemp -d) && cd ${DIR} && \
         make distclean && \
         hash -r && \
         rm -rf ${DIR} && \
-# cleanup
         cd && \
         apk del ${buildDeps} && \
         rm -rf /var/cache/apk/* /usr/local/include && \
