@@ -31,7 +31,7 @@ fi
 DATE_MICRO=$(($(LANG=C date +%s%6N)/960000*960000))
 DATE_PART1=$((${DATE_MICRO}/1000000))
 DATE_PART2=$((${DATE_MICRO}%1000000))
-DATE_MS_PART=$(($DATE_PART2/1000))
+DATE_MS_PART=$((1000-$(($DATE_PART2/1000))))
 # the -ism_offset option has a timescale of 10,000,000, so add an extra zero
 ISM_OFFSET=${DATE_MICRO}0
 # the number of seconds into the current day
@@ -40,6 +40,7 @@ DATE_MOD_DAYS=$((${DATE_PART1}%86400))
 echo DATE_MICRO=$DATE_MICRO
 echo DATE_PART1=$DATE_PART1
 echo DATE_PART2=$DATE_PART2
+echo DATE_MS_PART=$DATE_MS_PART
 echo ISM_OFFSET=$ISM_OFFSET
 echo DATE_MOD_DAYS=$DATE_MOD_DAYS
 
@@ -50,7 +51,7 @@ exec ffmpeg \
   -f lavfi -i smptehdbars=size=1280x720 \
   ${LOGO_OVERLAY} \
   -filter_complex "\
-    drawtext=\
+    [0]drawtext=\
       box=1:\
       boxborderw=4:\
       boxcolor=black:\
@@ -58,15 +59,23 @@ exec ffmpeg \
       fontsize=32:\
       text='%{pts\:gmtime\:${DATE_PART1}\:%Y-%m-%d}%{pts\:hms\:${DATE_MOD_DAYS}.${DATE_PART2}}':\
       x=(w-tw)/2:\
-      y=30;\
+      y=30,
+    drawtext=\
+      fontcolor=white:\
+      fontsize=20:\
+      text='${HOSTNAME}':
+      x=w-tw-30:
+      y=30\
+      [v];\
     sine=frequency=1:beep_factor=480:sample_rate=48000, \
-      atempo=0.5[a1]; \
-    sine=frequency=1:beep_factor=960:sample_rate=48000, \
-      atempo=0.5, \
-      adelay=1000[a2]; \
-    [a1][a2]amix, \
-    highpass=40,
-    adelay=${DATE_MS_PART}[a] \
+      atempo=1, \
+    adelay=${DATE_MS_PART}, \
+    highpass=40, \
+    asplit=2[a1][a2]; \
+    [a1]showwaves=mode=p2p:colors=white:size=1280x100:scale=lin:rate=$(($FRAME_RATE))[waves]; \
+    color=size=1280x100:color=black[blackbg]; \
+    [blackbg][waves]overlay[waves2]; \
+    [v][waves2]overlay=y=620[v] \
       " \
   -g ${GOP_LENGTH} \
   -r ${FRAME_RATE} \
@@ -78,8 +87,8 @@ exec ffmpeg \
   -b:v 500k \
   -ar 48000 \
   -c:a aac \
-  -map 0:v \
-  -map "[a]" \
+  -map "[v]" \
+  -map "[a2]" \
   -fflags +genpts \
   -movflags isml+frag_every_frame+delay_moov+cmaf+negative_cts_offsets+separate_moof \
   -ism_offset ${ISM_OFFSET} \
