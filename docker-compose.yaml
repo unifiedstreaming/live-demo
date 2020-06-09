@@ -19,7 +19,6 @@ services:
       - FRAME_RATE=25
       - GOP_LENGTH=24
       - PUB_POINT_URI=http://live-origin/test/test.isml/Streams(ffmpeg)
-      - LOGO_OVERLAY=
     depends_on:
       live-origin:
         condition: service_healthy
@@ -29,7 +28,6 @@ services:
       - FRAME_RATE=25
       - GOP_LENGTH=24
       - PUB_POINT_URI=http://live-origin/test/test.isml/Streams(ffmpeg)
-      - LOGO_OVERLAY=
     depends_on:
       live-origin:
         condition: service_healthy

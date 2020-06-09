@@ -15,7 +15,7 @@ export LOGO_OVERLAY="${LOGO_OVERLAY-https://raw.githubusercontent.com/unifiedstr
 
 if [ -n "${LOGO_OVERLAY}" ]; then
   export LOGO_OVERLAY="-i ${LOGO_OVERLAY}"
-  export OVERLAY_FILTER=", overlay=eval=init:x=W-15-w:y=15"
+  export OVERLAY_FILTER=";[v][1]overlay=eval=init:x=15:y=15[v]"
 fi
 
 # validate required variables are set
@@ -43,6 +43,7 @@ echo DATE_PART2=$DATE_PART2
 echo DATE_MS_PART=$DATE_MS_PART
 echo ISM_OFFSET=$ISM_OFFSET
 echo DATE_MOD_DAYS=$DATE_MOD_DAYS
+echo LOGO_OVERLAY=$LOGO_OVERLAY
 
 set -x
 exec ffmpeg \
@@ -76,6 +77,7 @@ exec ffmpeg \
     color=size=1280x100:color=black[blackbg]; \
     [blackbg][waves]overlay[waves2]; \
     [v][waves2]overlay=y=620[v] \
+    ${OVERLAY_FILTER}
       " \
   -g ${GOP_LENGTH} \
   -r ${FRAME_RATE} \
