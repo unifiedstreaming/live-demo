@@ -1,5 +1,5 @@
 # ffmpeg - http://ffmpeg.org/download.html
-# based on image from 
+# based on image from
 # https://hub.docker.com/r/jrottenberg/ffmpeg/
 #
 #
@@ -10,7 +10,7 @@ ENV         X264_VERSION=20160826-2245-stable \
             PKG_CONFIG_PATH=/usr/local/lib/pkgconfig \
             SRC=/usr/local
 
-COPY ism_movenc.patch /root/ism_movenc.patch
+COPY *.patch /root/
 
 RUN     buildDeps="autoconf \
                    automake \
@@ -83,7 +83,7 @@ CMD  ffmpeg -re -f lavfi -i smptehdbars=size=1280x720 \
             -f lavfi -i anullsrc \
             $LOGO_OVERLAY \
             -filter_complex \
-                "drawbox=y=25: x=iw/2-iw/7: c=0x00000000@1: w=iw/3.5: h=36: t=max, \
+                "drawbox=y=25: x=iw/2-iw/7: c=0x00000000@1: w=iw/3.5: h=36: t=fill, \
                  drawtext=timecode_rate=${FRAME_RATE}: timecode='$(date -u +%H\\:%M\\:%S)\\${FRAME_SEP}$(($(date +%3N)/$(($FRAME_RATE))))': tc24hmax=1: fontsize=32: x=(w-tw)/2+tw/2: y=30: fontcolor=white, \
                  drawtext=text='%{gmtime\:%Y-%m-%d}\ ': fontsize=32: x=(w-tw)/2-tw/2: y=30: fontcolor=white${OVERLAY_FILTER}" \
             -g $GOP_LENGTH \
