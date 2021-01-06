@@ -4,9 +4,9 @@ on:
     branches:
       - ci-test
 jobs:
-  test:
+  build-ffmpeg:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Build the stack
-        run: docker-compose up -d
+        run: docker-compose build --no-cache ffmpeg
