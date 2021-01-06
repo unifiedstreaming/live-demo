@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   live-origin:
-    image: unifiedstreaming/live:1.10.28
+    image: unifiedstreaming/live:1.10.18
     ports:
       - 80:80
     environment:
@@ -14,7 +14,7 @@ services:
       timeout: 5s
       retries: 30
   ffmpeg:
-    build: ffmpeg
+    build: https://github.com/unifiedstreaming/live-demo.git#:ffmpeg
     environment:
       - PUB_POINT_URI=http://live-origin/test/test.isml/Streams(ffmpeg)
       - LOGO_OVERLAY=
