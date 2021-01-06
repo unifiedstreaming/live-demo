@@ -1,5 +1,8 @@
 name: Docker Compose Actions Workflow
-on: push
+on:
+  push:
+    branches:
+      - ci-test
 jobs:
   test:
     runs-on: ubuntu-latest
