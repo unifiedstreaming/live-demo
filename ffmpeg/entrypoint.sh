@@ -18,7 +18,7 @@ if [ $FRAME_RATE == "30000/1001" ] || [ $FRAME_RATE == "60000/1001" ]
   export FRAME_SEP=\.
 fi
 
-if [ -z ${LOGO_OVERLAY+x$LOGO_OVERLAY} ]
+if [ -z ${LOGO_OVERLAY} ]
   then
   export LOGO_OVERLAY="https://raw.githubusercontent.com/unifiedstreaming/live-demo/master/ffmpeg/usp_logo_white.png"
 fi
@@ -36,5 +36,5 @@ if [ ! $PUB_POINT_URI ]
   exit 1
 fi
 
-
 exec "$@"
+
